@@ -56,13 +56,10 @@ public:
                             //if (field[row1][i].find(value).operator*() == value && field[row1][i].size() != 1) { //if value is inside the set && value is not only value
                             if (field[row1][i].find(value).operator*() == value && i != col1) { //if value is inside the set && value is not only value
                                 field[row1][i].erase(value); //does erase erase at index or erase that elem
-                                int size = field[row1][i].size();
-                                if (size == 0) {
+                                isStillChanging = true;
+                                if (field[row1][i].size() == 0) {
                                     result = false;
                                     break;
-                                }
-                                if (size > 1) {
-                                    isStillChanging = true;
                                 }
                                 std::cout << "erasing " << value << " from (" << row1 << ", " << i << ")." << std::endl;
                                 std::cout << "size: " << field[row1][i].size() << std::endl;
@@ -71,13 +68,10 @@ public:
                             //if (field[i][col1].find(value).operator*() == value && field[i][col1].size() != 1) { //if value is inside the set && value is not only value
                             if (field[i][col1].find(value).operator*() == value && i != row1) { //if value is inside the set && value is not only value
                                 field[i][col1].erase(value);
-                                int size = field[i][col1].size();
-                                if (size == 0) {
+                                isStillChanging = true;
+                                if (field[i][col1].size() == 0) {
                                     result = false;
                                     break;
-                                }
-                                if (size > 1) {
-                                    isStillChanging = true;
                                 }
                                 std::cout << "erasing " << value << " from (" << i << ", " << col1 << ")." << std::endl;
                                 std::cout << "size: " << field[i][col1].size() << std::endl;
@@ -91,13 +85,10 @@ public:
                                 //if (field[row2][col2].find(value).operator*() == value && field[row2][col2].size() != 1) { //if value is inside the set && value is not only value
                                 if (field[row2][col2].find(value).operator*() == value && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
                                     field[row2][col2].erase(value);
-                                    int size = field[row2][col2].size();
-                                    if (size == 0) {
+                                    isStillChanging = true;
+                                    if (field[row2][col2].size() == 0) {
                                         result = false;
                                         break;
-                                    }
-                                    if (size > 1) {
-                                        isStillChanging = true;
                                     }
                                     std::cout << "erasing " << value << " from (" << row2 << ", " << col2 << ")."
                                               << std::endl;
