@@ -55,7 +55,7 @@ public:
                         for (int i = 0; i < size; ++i) {
                             //taking care of squares on same row
                             std::cout << " this is the value of find(value): " << field[i][col1].find(value).operator*()  <<std::endl;
-                            if (field[i][col1].find(value).operator*() == value && i != row1) { //if value is inside the set && value is not only value
+                            if (field[i][col1].find(value).operator*() == value && field[i][col1].find(value) != field[i][col1].end() && i != row1) { //if value is inside the set && value is not only value
                                 field[i][col1].erase(value);
                                 isStillChanging = true;
                                 std::cout << "staying while loop now" << std::endl;
@@ -68,7 +68,7 @@ public:
                                 std::cout << "size: " << field[i][col1].size() << std::endl;
                             }
                             //taking care of squares on same column
-                            if (field[row1][i].find(value).operator*() == value && i != col1) { //if value is inside the set && value is not only value
+                            if (field[row1][i].find(value).operator*() == value && field[row1][i].find(value) != field[row1][i].end() && i != col1) { //if value is inside the set && value is not only value
                                 field[row1][i].erase(value); //does erase erase at index or erase that elem
                                 isStillChanging = true;
                                 std::cout << "staying while loop now" << std::endl;
