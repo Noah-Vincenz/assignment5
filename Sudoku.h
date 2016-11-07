@@ -51,11 +51,13 @@ public:
                     if (field[row1][col1].size() == 1) {
                         std::cout << "Square full at (" << row1 << ", " << col1 << ")." << std::endl;
                         int value = field[row1][col1].begin().operator*();
+                        std::cout << "This is the value that needs to be checked for: " << value << std::endl;
                         for (int i = 0; i < size; ++i) {
                             //taking care of squares on same row
                             if (field[row1][i].find(value).operator*() == value && i != col1) { //if value is inside the set && value is not only value
                                 field[row1][i].erase(value); //does erase erase at index or erase that elem
                                 isStillChanging = true;
+                                std::cout << "staying while loop now" << std::endl;
                                 if (field[row1][i].size() == 0) {
                                     result = false;
                                     std::cout << "should leave while loop now" << std::endl;
@@ -69,6 +71,7 @@ public:
                             if (field[i][col1].find(value).operator*() == value && i != row1) { //if value is inside the set && value is not only value
                                 field[i][col1].erase(value);
                                 isStillChanging = true;
+                                std::cout << "staying while loop now" << std::endl;
                                 if (field[i][col1].size() == 0) {
                                     result = false;
                                     break;
@@ -86,6 +89,7 @@ public:
                                 if (field[row2][col2].find(value).operator*() == value && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
                                     field[row2][col2].erase(value);
                                     isStillChanging = true;
+                                    std::cout << "staying while loop now" << std::endl;
                                     if (field[row2][col2].size() == 0) {
                                         result = false;
                                         break;
