@@ -38,6 +38,7 @@ public:
     }
 
     bool setSquare(int row, int col, int value) {
+        //when it finds 1 at (0,4) it keeps erasing 1 only for every single one but it shouldnt be
         bool result = true;
         field[row][col].clear();
         field[row][col].insert(value);
@@ -59,6 +60,7 @@ public:
                                     result = false;
                                     break;
                                 }
+                                std::cout << "1111111111111111111" << std::endl;
                                 std::cout << "erasing " << value << " from (" << row1 << ", " << i << ")." << std::endl;
                                 std::cout << "size: " << field[row1][i].size() << std::endl;
                             }
@@ -70,6 +72,7 @@ public:
                                     result = false;
                                     break;
                                 }
+                                std::cout << "22222222222222222222" << std::endl;
                                 std::cout << "erasing " << value << " from (" << i << ", " << col1 << ")." << std::endl;
                                 std::cout << "size: " << field[i][col1].size() << std::endl;
                             }
@@ -86,6 +89,7 @@ public:
                                         result = false;
                                         break;
                                     }
+                                    std::cout << "333333333333333333333333" << std::endl;
                                     std::cout << "erasing " << value << " from (" << row2 << ", " << col2 << ")." << std::endl;
                                     std::cout << "size: " << field[row2][col2].size() << std::endl;
                                 }
