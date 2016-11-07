@@ -87,7 +87,7 @@ public:
                         int colMod = col1 - col1 % sqrt;
                         for (int row2 = rowMod; row2 < (rowMod + sqrt); ++row2) {
                             for (int col2 = colMod; col2 < (colMod + sqrt); ++col2) {
-                                if (field[row2][col2].find(value).operator*() == value && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
+                                if (field[row2][col2].find(value).operator*() == value && field[row2][col2].find(value) != field[row2][col2].end() && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
                                     field[row2][col2].erase(value);
                                     isStillChanging = true;
                                     std::cout << "staying while loop now" << std::endl;
