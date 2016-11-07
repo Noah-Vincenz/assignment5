@@ -54,6 +54,20 @@ public:
                         std::cout << "This is the value that needs to be checked for: " << value << std::endl;
                         for (int i = 0; i < size; ++i) {
                             //taking care of squares on same row
+                            std::cout << " this is the value of find(value): " << field[i][col1].find(value).operator*()  <<std::endl;
+                            if (field[i][col1].find(value).operator*() == value && i != row1) { //if value is inside the set && value is not only value
+                                field[i][col1].erase(value);
+                                isStillChanging = true;
+                                std::cout << "staying while loop now" << std::endl;
+                                if (field[i][col1].size() == 0) {
+                                    result = false;
+                                    break;
+                                }
+                                std::cout << "111111111111111111111" << std::endl;
+                                std::cout << "erasing " << value << " from (" << i << ", " << col1 << ")." << std::endl;
+                                std::cout << "size: " << field[i][col1].size() << std::endl;
+                            }
+                            //taking care of squares on same column
                             if (field[row1][i].find(value).operator*() == value && i != col1) { //if value is inside the set && value is not only value
                                 field[row1][i].erase(value); //does erase erase at index or erase that elem
                                 isStillChanging = true;
@@ -63,22 +77,9 @@ public:
                                     std::cout << "should leave while loop now" << std::endl;
                                     break;
                                 }
-                                std::cout << "1111111111111111111" << std::endl;     //these three are repeated 3 times thenback to "sqr full at.."
+                                std::cout << "22222222222222222222222" << std::endl;     //these three are repeated 3 times thenback to "sqr full at.."
                                 std::cout << "erasing " << value << " from (" << row1 << ", " << i << ")." << std::endl;
                                 std::cout << "size: " << field[row1][i].size() << std::endl;
-                            }
-                            //taking care of squares on same column
-                            if (field[i][col1].find(value).operator*() == value && i != row1) { //if value is inside the set && value is not only value
-                                field[i][col1].erase(value);
-                                isStillChanging = true;
-                                std::cout << "staying while loop now" << std::endl;
-                                if (field[i][col1].size() == 0) {
-                                    result = false;
-                                    break;
-                                }
-                                std::cout << "22222222222222222222" << std::endl;
-                                std::cout << "erasing " << value << " from (" << i << ", " << col1 << ")." << std::endl;
-                                std::cout << "size: " << field[i][col1].size() << std::endl;
                             }
                         }
                         int sqrt = std::sqrt(size);
