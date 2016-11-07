@@ -7,7 +7,7 @@
 
 
 // TODO: Your Sudoku class goes here:
-class Sudoku /*: public Searchable */ {
+class Sudoku { // public Searchable
 private:
     int size;
     vector<vector<std::set<int> > > field;
@@ -28,7 +28,6 @@ public:
             }
         }
     }
-
     int getSquare(int row, int col) const {
         if (field[row][col].size() > 1) {
             return -1;
@@ -36,9 +35,9 @@ public:
             return field[row][col].begin().operator*();
         }
     }
-
     bool setSquare(int row, int col, int value) {
         //when it finds 1 at (0,4) it keeps erasing 1 only for every single one but it shouldnt be
+        //it does erasing fine until having finihsed with 1 at (0,4) then it gets stuck at 11111111111111111
         bool result = true;
         field[row][col].clear();
         field[row][col].insert(value);
