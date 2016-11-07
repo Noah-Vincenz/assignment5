@@ -43,7 +43,8 @@ public:
         field[row][col].insert(value);
         std::cout << "Setting a sqr: Row: " << row << "  Col: " << col << "  Data: " << getSquare(row, col) << std::endl;
         bool isStillChanging = true;
-        while (isStillChanging) {
+        while (isStillChanging == true) {
+            std::cout << "now in while loop" << std::endl;
             isStillChanging = false;
             for (int row1 = 0; row1 < size; ++row1) {
                 for (int col1 = 0; col1 < size; ++col1) {
@@ -57,9 +58,10 @@ public:
                                 isStillChanging = true;
                                 if (field[row1][i].size() == 0) {
                                     result = false;
+                                    std::cout << "should leave while loop now" << std::endl;
                                     break;
                                 }
-                                std::cout << "1111111111111111111" << std::endl;
+                                std::cout << "1111111111111111111" << std::endl;     //these three are repeated 3 times thenback to "sqr full at.."
                                 std::cout << "erasing " << value << " from (" << row1 << ", " << i << ")." << std::endl;
                                 std::cout << "size: " << field[row1][i].size() << std::endl;
                             }
