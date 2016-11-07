@@ -48,7 +48,7 @@ public:
                         int value = field[row1][col1].begin().operator*();
                         for (int i = 0; i < size; ++i) {
                             //taking care of squares on same row
-                            if (field[i][col1].find(value).operator*() == value && field[i][col1].find(value) != field[i][col1].end() && i != row1) { //if value is inside the set && value is not only value
+                            if ( /* field[i][col1].find(value).operator*() == value && */ field[i][col1].find(value) != field[i][col1].end() && i != row1) { //if value is inside the set && value is not only value
                                 field[i][col1].erase(value);
                                 isStillChanging = true;
                                 if (field[i][col1].size() == 0) {
@@ -57,7 +57,7 @@ public:
                                 }
                             }
                             //taking care of squares on same column
-                            if (field[row1][i].find(value).operator*() == value && field[row1][i].find(value) != field[row1][i].end() && i != col1) { //if value is inside the set && value is not only value
+                            if ( /* field[row1][i].find(value).operator*() == value && */ field[row1][i].find(value) != field[row1][i].end() && i != col1) { //if value is inside the set && value is not only value
                                 field[row1][i].erase(value); //does erase erase at index or erase that elem
                                 isStillChanging = true;
                                 if (field[row1][i].size() == 0) {
@@ -71,7 +71,7 @@ public:
                         int colMod = col1 - col1 % sqrt;
                         for (int row2 = rowMod; row2 < (rowMod + sqrt); ++row2) {
                             for (int col2 = colMod; col2 < (colMod + sqrt); ++col2) {
-                                if (field[row2][col2].find(value).operator*() == value && field[row2][col2].find(value) != field[row2][col2].end() && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
+                                if (/* field[row2][col2].find(value).operator*() == value && */ field[row2][col2].find(value) != field[row2][col2].end() && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
                                     field[row2][col2].erase(value);
                                     isStillChanging = true;
                                     if (field[row2][col2].size() == 0) {
