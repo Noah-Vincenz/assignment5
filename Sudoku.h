@@ -113,7 +113,7 @@ public:
                                 }
                             }
                         }
-                    }
+                    }/*
                     else if (field[row1][col1].size() == 3) {
                         vector <int> intsOfIdenticalSquares;
                         for (int i = 0; i < size; ++i) {
@@ -152,7 +152,7 @@ public:
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }
