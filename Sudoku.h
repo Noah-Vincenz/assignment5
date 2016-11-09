@@ -52,6 +52,7 @@ public:
                                 field[i][col1].erase(value);
                                 isStillChanging = true;
                                 if (field[i][col1].size() == 0) {
+                                    std::cout << "MUST RETURN FALSE" << std::endl;
                                     result = false;
                                     break;
                                 }
@@ -61,6 +62,7 @@ public:
                                 field[row1][i].erase(value);
                                 isStillChanging = true;
                                 if (field[row1][i].size() == 0) {
+                                    std::cout << "MUST RETURN FALSE" << std::endl;
                                     result = false;
                                     break;
                                 }
@@ -75,6 +77,7 @@ public:
                                     field[row2][col2].erase(value);
                                     isStillChanging = true;
                                     if (field[row2][col2].size() == 0) {
+                                        std::cout << "MUST RETURN FALSE" << std::endl;
                                         result = false;
                                         break;
                                     }
@@ -122,14 +125,24 @@ public:
                         unique_ptr<Searchable> board = unique_ptr<Sudoku>(new Sudoku(*this));
                         if (static_cast<Sudoku*>(board.get())->setSquare(i,j,a)) {
                             successors.emplace_back(std::move(board));
+                            std:: cout << "In here 11111111111" << std::endl;
                         }
                         else {
-                            board.reset();
+                            delete (static_cast<Sudoku*>(board.get()));
+                            //board.reset();
+                            std:: cout << "In here 222222222222" << std::endl;
+
                         }
+                        std::cout << "a" << std::endl;
                     }
+                    std::cout << "b" << std::endl;
                 }
+                std::cout << "c" << std::endl;
             }
+            std::cout << "d" << std::endl;
         }
+        std::cout << "e" << std::endl;
+        std::cout << successors.size() << std::endl;
         return successors;
     }
 };
