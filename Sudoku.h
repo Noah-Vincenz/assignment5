@@ -13,12 +13,11 @@ private:
     vector<vector<std::set<int> > > field;
     std::set<int> mySet;
 public:
-    Sudoku(int sizeIn)
+    Sudoku(const int sizeIn)
             : size(sizeIn) {
         field = vector<vector<std::set<int> > >(sizeIn, std::vector<std::set<int> >(sizeIn));
         for (int row = 0; row < sizeIn; ++row) {
             for (int col = 0; col < sizeIn; ++col) {
-                //std::set < int> mySet;
                 mySet.clear();
                 for (int i = 1; i <= sizeIn; ++i) {
                     mySet.insert(i);
@@ -28,14 +27,14 @@ public:
             }
         }
     }
-    int getSquare(int row, int col) const {
+    int getSquare(const int row, const int col) const {
         if (field[row][col].size() > 1) {
             return -1;
         } else {
-            return field[row][col].begin().operator*();
+            return *field[row][col].begin();
         }
     }
-    bool setSquare(int row, int col, int value) {
+    bool setSquare(const int row, const int col, const int value) {
         bool result = true;
         field[row][col].clear();
         field[row][col].insert(value);
@@ -45,14 +44,13 @@ public:
             for (int row1 = 0; row1 < size; ++row1) {
                 for (int col1 = 0; col1 < size; ++col1) {
                     if (field[row1][col1].size() == 1) {
-                        int value = field[row1][col1].begin().operator*();
+                        int value = *field[row1][col1].begin();
                         for (int i = 0; i < size; ++i) {
                             //taking care of squares on same row
                             if (field[i][col1].find(value) != field[i][col1].end() && i != row1) { //if value is inside the set && value is not only value
                                 field[i][col1].erase(value);
                                 isStillChanging = true;
                                 if (field[i][col1].size() == 0) {
-                                    std::cout << "MUST RETURN FALSE" << std::endl;
                                     result = false;
                                     break;
                                 }
@@ -62,7 +60,6 @@ public:
                                 field[row1][i].erase(value);
                                 isStillChanging = true;
                                 if (field[row1][i].size() == 0) {
-                                    std::cout << "MUST RETURN FALSE" << std::endl;
                                     result = false;
                                     break;
                                 }
@@ -77,7 +74,6 @@ public:
                                     field[row2][col2].erase(value);
                                     isStillChanging = true;
                                     if (field[row2][col2].size() == 0) {
-                                        std::cout << "MUST RETURN FALSE" << std::endl;
                                         result = false;
                                         break;
                                     }
@@ -90,8 +86,20 @@ public:
         }
         return result;
     }
-//should be virtual??
-    bool isSolution() const override {
+    /*
+    void doAdjustments (const int i, const int j, const int value) {
+        field[i][j].erase(value);
+        isStillChanging = true;
+        if (field[i][j].size() == 0) {
+            result = false;
+            break;
+        }
+    }
+     */
+
+
+
+    virtual bool isSolution() const override {
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 if (getSquare(i,j) == -1) {
@@ -101,7 +109,7 @@ public:
         }
         return true;
     }
-    void write(ostream & o) const override {
+    virtual void write(ostream & o) const override {
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
                 if (getSquare(i,j) == -1) {
@@ -114,35 +122,24 @@ public:
             o << std::endl;
         }
     }
-    vector<unique_ptr<Searchable> > successors() const override {
+    virtual vector<unique_ptr<Searchable> > successors() const override {
         vector<unique_ptr<Searchable> > successors;
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < size; ++j) {
-                //if (getSquare(i,j) == -1) { //returns -1 for every single one ----------------------------------------
-                if (field[i][j].size() > 1) { //doesnt make a difference
-                    std:: cout << "Square empty at: (" << i << ", " << j << ")" << std::endl;
+                if (field[i][j].size() > 1) {
                     for(int a : field[i][j]) {
-                        unique_ptr<Searchable> board = unique_ptr<Sudoku>(new Sudoku(*this));
-                        if (static_cast<Sudoku*>(board.get())->setSquare(i,j,a)) {
-                            successors.emplace_back(std::move(board));
-                            std:: cout << "In here 11111111111" << std::endl;
+                        Sudoku * board = new Sudoku(*this);
+                        if (board->setSquare(i,j,a)) {
+                            successors.emplace_back(board);
                         }
                         else {
-                            delete (static_cast<Sudoku*>(board.get()));
-                            //board.reset();
-                            std:: cout << "In here 222222222222" << std::endl;
-
+                            delete board;
                         }
-                        std::cout << "a" << std::endl;
                     }
-                    std::cout << "b" << std::endl;
+                    return successors;
                 }
-                std::cout << "c" << std::endl;
             }
-            std::cout << "d" << std::endl;
         }
-        std::cout << "e" << std::endl;
-        std::cout << successors.size() << std::endl;
         return successors;
     }
 };
