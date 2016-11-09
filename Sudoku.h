@@ -113,46 +113,7 @@ public:
                                 }
                             }
                         }
-                    }/*
-                    else if (field[row1][col1].size() == 3) {
-                        vector <int> intsOfIdenticalSquares;
-                        for (int i = 0; i < size; ++i) {
-                            if (field[row1][col1] == field[row1][i] && i != col1) { //if the sets are the same
-                                intsOfIdenticalSquares.push_back(i);
-                                if (intsOfIdenticalSquares.size() == 2) {
-                                    for (int j = 0; j < size && j != col1 && j != intsOfIdenticalSquares.at(1); ++j) {
-                                        for (int k : field[row1][col1]) {
-                                            if (field[row1][j].find(k) != field[row1][j].end()) {
-                                                field[row1][j].erase(k);
-                                                isStillChanging = true;
-                                                if (field[row1][j].size() == 0) {
-                                                    result = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if (field[row1][col1] == field[i][col1] && i != row1) { //if the sets are the same
-                                intsOfIdenticalSquares.push_back(i);
-                                if (intsOfIdenticalSquares.size() == 3) {
-                                    for (int j = 0; j < size && j != row1 && j != i && j != intsOfIdenticalSquares.at(2); ++j) {
-                                        for (int k : field[row1][col1]) {
-                                            if (field[j][col1].find(k) != field[j][col1].end()) {
-                                                field[j][col1].erase(k);
-                                                isStillChanging = true;
-                                                if (field[j][col1].size() == 0) {
-                                                    result = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }*/
+                    }
                 }
             }
         }
