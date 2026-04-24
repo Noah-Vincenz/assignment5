@@ -4,109 +4,126 @@
 #include "Searchable.h"
 #include <set>
 #include <cmath>
+#include <stdexcept>
 
-
-// TODO: Your Sudoku class goes here:
-class Sudoku: public Searchable {
+class Sudoku : public Searchable {
 private:
-    int size;
-    vector<vector<std::set<int> > > field;
-    std::set<int> mySet;
+    int boardSize;
+    int boxSize;
+    vector<vector<std::set<int>>> board;
+
 public:
-    Sudoku(const int sizeIn)
-            : size(sizeIn) {
-        field = vector<vector<std::set<int> > >(sizeIn, std::vector<std::set<int> >(sizeIn));
+    Sudoku(int sizeIn)
+        : boardSize(sizeIn), boxSize(static_cast<int>(std::sqrt(sizeIn))) {
+        if (boxSize * boxSize != boardSize) {
+            throw std::invalid_argument("boardSize must be a perfect square");
+        }
+        board.resize(sizeIn, std::vector<std::set<int>>(sizeIn));
         for (int row = 0; row < sizeIn; ++row) {
             for (int col = 0; col < sizeIn; ++col) {
-                mySet.clear();
                 for (int i = 1; i <= sizeIn; ++i) {
-                    mySet.insert(i);
-                    field[row][col].insert(i);
+                    board[row][col].insert(i);
                 }
-                field[row][col] = mySet;
             }
         }
     }
-    int getSquare(const int row, const int col) const {
-        if (field[row][col].size() > 1) {
-            return -1;
-        } else {
-            return *field[row][col].begin();
+
+    int getSquare(int row, int col) const {
+        if (board[row][col].size() == 1) {
+            return *board[row][col].begin();
         }
+        return -1;
     }
-    bool setSquare(const int row, const int col, const int value) {
-        bool result = true;
-        field[row][col].clear();
-        field[row][col].insert(value);
+
+    bool setSquare(int row, int col, int value) {
+        board[row][col].clear();
+        board[row][col].insert(value);
+
         bool isStillChanging = true;
-        while (isStillChanging == true) {
+        while (isStillChanging) {
             isStillChanging = false;
-            for (int row1 = 0; row1 < size; ++row1) {
-                for (int col1 = 0; col1 < size; ++col1) {
-                    int sqrt = std::sqrt(size);
-                    int rowMod = row1 - row1 % sqrt;
-                    int colMod = col1 - col1 % sqrt;
-                    if (field[row1][col1].size() == 1) {
-                        int value = *field[row1][col1].begin();
-                        for (int i = 0; i < size; ++i) {
-                            //taking care of squares on same col
-                            if (field[i][col1].find(value) != field[i][col1].end() && i != row1) { //if value is inside the set && value is not only value
-                                field[i][col1].erase(value);
+            for (int row1 = 0; row1 < boardSize; ++row1) {
+                for (int col1 = 0; col1 < boardSize; ++col1) {
+                    int rowMod = row1 - row1 % boxSize;
+                    int colMod = col1 - col1 % boxSize;
+
+                    if (board[row1][col1].size() == 1) {
+                        int determinedValue = *board[row1][col1].begin();
+
+                        // eliminate determined value from same column and same row
+                        for (int i = 0; i < boardSize; ++i) {
+                            if (i != row1 && board[i][col1].count(determinedValue)) {
+                                board[i][col1].erase(determinedValue);
                                 isStillChanging = true;
-                                if (field[i][col1].size() == 0) {
-                                    result = false;
-                                    break;
-                                }
+                                if (board[i][col1].empty()) return false;
                             }
-                            //taking care of squares on same row
-                            if (field[row1][i].find(value) != field[row1][i].end() && i != col1) { //if value is inside the set && value is not only value
-                                field[row1][i].erase(value);
+                            if (i != col1 && board[row1][i].count(determinedValue)) {
+                                board[row1][i].erase(determinedValue);
                                 isStillChanging = true;
-                                if (field[row1][i].size() == 0) {
-                                    result = false;
-                                    break;
-                                }
+                                if (board[row1][i].empty()) return false;
                             }
                         }
-                        for (int row2 = rowMod; row2 < (rowMod + sqrt); ++row2) {
-                            for (int col2 = colMod; col2 < (colMod + sqrt); ++col2) {
-                                if (field[row2][col2].find(value) != field[row2][col2].end() && row2 != row1 && col2 != col1) { //if value is inside the set && value is not only value
-                                    field[row2][col2].erase(value);
+
+                        // eliminate from same box
+                        for (int row2 = rowMod; row2 < rowMod + boxSize; ++row2) {
+                            for (int col2 = colMod; col2 < colMod + boxSize; ++col2) {
+                                if (!(row2 == row1 && col2 == col1)
+                                    && board[row2][col2].count(determinedValue)) {
+                                    board[row2][col2].erase(determinedValue);
                                     isStillChanging = true;
-                                    if (field[row2][col2].size() == 0) {
-                                        result = false;
-                                        break;
-                                    }
+                                    if (board[row2][col2].empty()) return false;
                                 }
                             }
                         }
                     }
-                    //checking for identical pairs in sets
-                    else if (field[row1][col1].size() == 2) {
-                        for (int i = 0; i < size; ++i) {
-                            if (field[row1][col1] == field[row1][i] && i != col1) { //if the sets are the same
-                                for (int j = 0; j < size && j != col1 && j != i; ++j) {
-                                    for (int k : field[row1][col1]) {
-                                        if (field[row1][j].find(k) != field[row1][j].end()) {
-                                            field[row1][j].erase(k);
+                    // naked pairs elimination
+                    else if (board[row1][col1].size() == 2) {
+                        // check row for naked pair
+                        for (int i = 0; i < boardSize; ++i) {
+                            if (i != col1 && board[row1][col1] == board[row1][i]) {
+                                for (int j = 0; j < boardSize; ++j) {
+                                    if (j == col1 || j == i) continue;
+                                    for (int k : board[row1][col1]) {
+                                        if (board[row1][j].count(k)) {
+                                            board[row1][j].erase(k);
                                             isStillChanging = true;
-                                            if (field[row1][j].size() == 0) {
-                                                result = false;
-                                                break;
-                                            }
+                                            if (board[row1][j].empty()) return false;
                                         }
                                     }
                                 }
                             }
-                            if (field[row1][col1] == field[i][col1] && i != row1) { //if the sets are the same
-                                for (int j = 0; j < size && j != row1 && j != i; ++j) {
-                                    for (int k : field[row1][col1]) {
-                                        if (field[j][col1].find(k) != field[j][col1].end()) {
-                                            field[j][col1].erase(k);
+                        }
+
+                        // check column for naked pair
+                        for (int i = 0; i < boardSize; ++i) {
+                            if (i != row1 && board[row1][col1] == board[i][col1]) {
+                                for (int j = 0; j < boardSize; ++j) {
+                                    if (j == row1 || j == i) continue;
+                                    for (int k : board[row1][col1]) {
+                                        if (board[j][col1].count(k)) {
+                                            board[j][col1].erase(k);
                                             isStillChanging = true;
-                                            if (field[j][col1].size() == 0) {
-                                                result = false;
-                                                break;
+                                            if (board[j][col1].empty()) return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // check box for naked pair
+                        for (int r = rowMod; r < rowMod + boxSize; ++r) {
+                            for (int c = colMod; c < colMod + boxSize; ++c) {
+                                if (!(r == row1 && c == col1)
+                                    && board[row1][col1] == board[r][c]) {
+                                    for (int r2 = rowMod; r2 < rowMod + boxSize; ++r2) {
+                                        for (int c2 = colMod; c2 < colMod + boxSize; ++c2) {
+                                            if ((r2 == row1 && c2 == col1) || (r2 == r && c2 == c)) continue;
+                                            for (int k : board[row1][col1]) {
+                                                if (board[r2][c2].count(k)) {
+                                                    board[r2][c2].erase(k);
+                                                    isStillChanging = true;
+                                                    if (board[r2][c2].empty()) return false;
+                                                }
                                             }
                                         }
                                     }
@@ -117,56 +134,75 @@ public:
                 }
             }
         }
-        return result;
+        return true;
     }
+
     virtual bool isSolution() const override {
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if (getSquare(i,j) == -1) {
+        for (int i = 0; i < boardSize; ++i) {
+            for (int j = 0; j < boardSize; ++j) {
+                if (getSquare(i, j) == -1) {
                     return false;
                 }
             }
         }
         return true;
     }
+
     virtual void write(ostream & o) const override {
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if (getSquare(i,j) == -1) {
+        for (int i = 0; i < boardSize; ++i) {
+            for (int j = 0; j < boardSize; ++j) {
+                if (getSquare(i, j) == -1) {
                     o << " ";
-                }
-                else {
-                    o << getSquare(i,j);
+                } else {
+                    o << getSquare(i, j);
                 }
             }
             o << std::endl;
         }
     }
-    virtual vector<unique_ptr<Searchable> > successors() const override {
-        vector<unique_ptr<Searchable> > successors;
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if (field[i][j].size() > 1) {
-                    for(int a : field[i][j]) {
-                        Sudoku * board = new Sudoku(*this);
-                        if (board->setSquare(i,j,a)) {
-                            successors.emplace_back(board);
-                        }
-                        else {
-                            delete board;
-                        }
-                    }
-                    return successors;
+
+    virtual vector<unique_ptr<Searchable>> successors() const override {
+        vector<unique_ptr<Searchable>> result;
+
+        // mrv heuristic: pick the undetermined cell with fewest candidates
+        int bestRow = -1, bestCol = -1;
+        int bestSize = boardSize + 1;
+        for (int i = 0; i < boardSize; ++i) {
+            for (int j = 0; j < boardSize; ++j) {
+                int sz = board[i][j].size();
+                if (sz > 1 && sz < bestSize) {
+                    bestSize = sz;
+                    bestRow = i;
+                    bestCol = j;
                 }
             }
         }
-        return successors;
+
+        if (bestRow == -1) {
+            return result;
+        }
+
+        for (int a : board[bestRow][bestCol]) {
+            auto copy = std::make_unique<Sudoku>(*this);
+            if (copy->setSquare(bestRow, bestCol, a)) {
+                result.push_back(std::move(copy));
+            }
+        }
+
+        // single-successor optimization: if only one valid successor and it's not
+        // solved, skip the queue and expand it directly via iteration
+        while (result.size() == 1 && !result[0]->isSolution()) {
+            result = result[0]->successors();
+        }
+
+        return result;
     }
+
     virtual int heuristicValue() const override {
         int count = 0;
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if(field[i][j].size() > 1) {
+        for (int i = 0; i < boardSize; ++i) {
+            for (int j = 0; j < boardSize; ++j) {
+                if (board[i][j].size() > 1) {
                     ++count;
                 }
             }
@@ -174,4 +210,5 @@ public:
         return count;
     }
 };
+
 #endif

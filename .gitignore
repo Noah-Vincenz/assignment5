@@ -1,0 +1,21 @@
+# build artifacts
+build/
+cmake-build-*/
+
+# compiled binaries
+BasicSudoku
+BreadthFSSudoku
+BestFSSudoku
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# object files
+*.o
+*.obj
+*.dSYM/
